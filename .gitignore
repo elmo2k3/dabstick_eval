@@ -1,0 +1,10 @@
+*.o
+*.*.swp
+*.bin
+*.bif
+*.elf
+*.log
+.mxproject
+.sconsign.dblite
+ANs/
+Datasheets/

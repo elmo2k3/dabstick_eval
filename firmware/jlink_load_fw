@@ -1,0 +1,8 @@
+device STM32F427VI
+speed 4000
+r
+loadbin si46xx_firmware/dab_radio_3_2_7.bif 0x80FFFFF
+loadbin si46xx_firmware/fmhd_radio_3_0_19.bif 0x817FFFE
+r
+g
+exit

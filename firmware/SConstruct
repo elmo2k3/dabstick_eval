@@ -1,0 +1,69 @@
+import os
+
+env = Environment(ENV = os.environ)
+
+def generate_arm(source, target, env, for_signature):
+    return '$OBJCOPY -O binary %s %s'%(source[0], target[0])
+
+env.Append(BUILDERS={
+    'Objcopy': Builder(
+               generator=generate_arm,
+               suffix='.bin',
+               src_suffix='.elf')})
+
+env['AR'] = 'arm-none-eabi-ar'
+env['AS'] = 'arm-none-eabi-as'
+env['CC'] = 'arm-none-eabi-gcc'
+env['CXX'] = 'arm-none-eabi-g++'
+env['RANLIB'] = 'arm-none-eabi-ranlib'
+env['OBJCOPY'] = 'arm-none-eabi-objcopy'
+env['PROGSUFFIX'] = '.elf'
+
+env['CPPPATH'] = [
+                '#Inc',
+                '#Drivers/CMSIS/Device/ST/STM32F4xx/Include/',
+                '#Drivers/STM32F4xx_HAL_Driver/Inc/',
+                '#Drivers/CMSIS/Include/',
+                '#Middlewares/ST/STM32_USB_Device_Library/Core/Inc',
+                '#Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc',
+                '#Middlewares/Third_Party/FatFs/src',
+                '#Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc',
+                '#LCD'
+                 ]
+env.Append(CPPDEFINES = 
+    ['STM32F427xx'])
+env.Append(CCFLAGS = ['-O2',
+                      #'-g',
+                      '-Wall',
+                      '-mlittle-endian',
+                      '-mthumb',
+                      '-mcpu=cortex-m4',
+                      '-mthumb-interwork',
+                      '-mfloat-abi=hard',
+                      '-mfpu=fpv4-sp-d16',
+                      ])
+                      
+env.Append(LINKFLAGS = ['-Wl,-T,"Projects/TrueSTUDIO/dabstick\ Configuration/STM32F427VI_FLASH.ld"',
+                        '-mlittle-endian',
+                        '-mthumb',
+                        '-mcpu=cortex-m4',
+                        '-mthumb-interwork',
+                        '-mfloat-abi=hard',
+                        '-mfpu=fpv4-sp-d16'])
+
+main = env.Program('program', [Glob('Src/*.c'),
+                        Glob('Drivers/STM32F4xx_HAL_Driver/Src/*.c'),Glob('Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Src/*.c'),
+                        Glob('Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c'),
+                        Glob('Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c'),
+                        Glob('Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c'),
+                        Glob('Middlewares/Third_Party/FatFs/src/*.c'),
+                        'LCD/dogm-graphic.c',
+                        'LCD/font.c',
+                        Glob('LCD/Fonts/*.c'),
+                        'Middlewares/Third_Party/FatFs/src/option/syscall.c',
+                        'Middlewares/Third_Party/FatFs/src/option/unicode.c',
+                        'Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c',
+                        'Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc/startup_stm32f427xx.s',
+                        Glob('shine/src/lib/*.c')],
+                        LIBS=['m'])
+env.Objcopy(main)

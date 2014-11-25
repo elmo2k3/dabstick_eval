@@ -1,0 +1,7 @@
+device STM32F427VI
+speed 4000
+r
+loadbin program.bin 0x8000000
+r
+g
+exit
