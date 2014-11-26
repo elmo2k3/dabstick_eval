@@ -13,6 +13,9 @@ This project is still work in progress
   * 2MB Flash, 256KB SRAM
   * Up to 180MHz, here 168MHz
 * SI4688-A10-GM FM / HD / DAB / DAB + radio receiver
+* CS43L22 Audio DAC with integrated class D speaker driver
+* General purpose 2x40 pin headers
+* Power by USB or screw connector
 
 ## Functional overview
 
